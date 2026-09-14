@@ -1,0 +1,9 @@
+{
+  "name": "flutter-sphere",
+  "version": "1.0.0",
+  "description": "SPHERE - Modern Social Media App",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "dev": "python -m http.server 8000"
+  }
+}
