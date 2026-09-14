@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPHERE - সোশ্যাল মিডিয়া অ্যাপ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #000;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        .app-container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: #000;
+        }
+
+        /* ========================
+           SPLASH SCREEN
+           ======================== */
+        .splash-screen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            position: absolute;
+            z-index: 1000;
+            flex-direction: column;
+        }
+
+        .splash-logo {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #1e90ff, #0066ff);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 60px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 20px;
+            box-shadow: 0 0 30px rgba(30, 144, 255, 0.5);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .splash-text {
+            font-size: 28px;
+            font-weight: bold;
+            letter-spacing: 4px;
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .splash-screen.hidden {
+            display: none;
+        }
+
+        /* ========================
+           LOGIN SCREEN
+           ======================== */
+        .login-screen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            position: absolute;
+            z-index: 999;
+            flex-direction: column;
+            padding: 24px;
+        }
+
+        .login-screen.hidden {
+            display: none;
+        }
+
+        .login-container {
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-title {
+            font-size: 36px;
+            color: #1e90ff;
+            font-weight: bold;
+            letter-spacing: 3px;
+            margin-bottom: 40px;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .google-btn {
+            background-color: white;
+            color: black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .google-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+        }
+
+        .phone-btn {
+            background-color: transparent;
+            color: white;
+            border: 2px solid #444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .phone-btn:hover {
+            border-color: #1e90ff;
+            color: #1e90ff;
+        }
+
+        /* ========================
+           MAIN APP
+           ======================== */
+        .main-app {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            z-index: 1;
+        }
+
+        .main-app.hidden {
+            display: none;
+        }
+
+        .app-content {
+            flex: 1;
+            overflow-y: auto;
+            background-color: #000;
+        }
+
+        /* AppBar */
+        .app-bar {
+            background-color: #000;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #222;
+        }
+
+        .app-title {
+            font-size: 26px;
+            color: #1e90ff;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .app-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .icon-btn:hover {
+            color: #1e90ff;
+            transform: scale(1.2);
+        }
+
+        /* ========================
+           FEED SCREEN
+           ======================== */
+        .screen {
+            display: none;
+            width: 100%;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .clips-moments {
+            padding: 10px 16px;
+            background-color: #0a0a0a;
+            display: flex;
+            justify-content: space-around;
+            border-bottom: 1px solid #1a1a1a;
+        }
+
+        .clips-moments-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .clips-moments-item:hover {
+            transform: scale(1.05);
+        }
+
+        .clips-moments-item.clips {
+            color: #ff4444;
+        }
+
+        .clips-moments-item.moments {
+            color: #aa00ff;
+        }
+
+        .post-input {
+            padding: 12px 16px;
+            background-color: #0a0a0a;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid #1a1a1a;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1e90ff, #0066ff);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .post-input-text {
+            flex: 1;
+            color: #666;
+            font-size: 15px;
+        }
+
+        .post-input-icons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .input-icon {
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .input-icon.image {
+            color: #00cc00;
+        }
+
+        .input-icon.video {
+            color: #ff4444;
+        }
+
+        .input-icon:hover {
+            transform: scale(1.2);
+        }
+
+        /* Post Card */
+        .post-card {
+            background-color: #0a0a0a;
+            padding: 12px;
+            margin-top: 8px;
+            border-bottom: 1px solid #1a1a1a;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .post-header-info {
+            flex: 1;
+            margin-left: 10px;
+        }
+
+        .post-username {
+            color: white;
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        .post-time {
+            color: #999;
+            font-size: 12px;
+        }
+
+        .post-menu {
+            cursor: pointer;
+            color: white;
+            font-size: 20px;
+            transition: all 0.2s ease;
+        }
+
+        .post-menu:hover {
+            color: #1e90ff;
+        }
+
+        .post-text {
+            color: white;
+            font-size: 15px;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        .post-actions {
+            display: flex;
+            justify-content: space-around;
+            padding-top: 12px;
+            border-top: 1px solid #1a1a1a;
+        }
+
+        .post-action {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            color: #666;
+            transition: all 0.2s ease;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .post-action:hover {
+            color: #1e90ff;
+        }
+
+        .post-action-icon {
+            font-size: 20px;
+        }
+
+        .post-action-text {
+            font-size: 14px;
+        }
+
+        /* ========================
+           CHATS SCREEN
+           ======================== */
+        .search-box {
+            padding: 12px;
+            background-color: #000;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 16px;
+            background-color: #1a1a1a;
+            border: none;
+            border-radius: 20px;
+            color: white;
+            font-size: 15px;
+        }
+
+        .search-input::placeholder {
+            color: #666;
+        }
+
+        .active-users {
+            height: 90px;
+            overflow-x: auto;
+            padding: 8px;
+            background-color: #000;
+            border-bottom: 1px solid #1a1a1a;
+            display: flex;
+            gap: 8px;
+        }
+
+        .user-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .user-avatar {
+            position: relative;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1e90ff, #0066ff);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
+        }
+
+        .online-indicator {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 14px;
+            height: 14px;
+            background-color: #00ff00;
+            border-radius: 50%;
+            border: 2px solid #000;
+        }
+
+        .user-name {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .chat-list {
+            flex: 1;
+            overflow-y: auto;
+            background-color: #000;
+        }
+
+        .chat-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid #1a1a1a;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .chat-item:hover {
+            background-color: #0a0a0a;
+        }
+
+        .chat-avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1e90ff, #0066ff);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .chat-info {
+            flex: 1;
+        }
+
+        .chat-name {
+            color: white;
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        .chat-preview {
+            color: #999;
+            font-size: 13px;
+            margin-top: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chat-time {
+            color: #666;
+            font-size: 12px;
+        }
+
+        /* ========================
+           PROFILE SCREEN
+           ======================== */
+        .profile-header {
+            position: relative;
+            margin-bottom: 50px;
+        }
+
+        .cover-photo {
+            width: 100%;
+            height: 160px;
+            background-color: #1a1a1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+            color: #666;
+        }
+
+        .profile-avatar-container {
+            position: absolute;
+            bottom: -45px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            background-color: #000;
+            padding: 4px;
+        }
+
+        .profile-avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1e90ff, #0066ff);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 55px;
+        }
+
+        .profile-info {
+            text-align: center;
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+
+        .profile-name {
+            font-size: 22px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 6px;
+        }
+
+        .profile-bio {
+            color: #999;
+            font-size: 14px;
+        }
+
+        .profile-actions {
+            display: flex;
+            gap: 8px;
+            padding: 0 16px;
+            margin-bottom: 20px;
+        }
+
+        .profile-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+
+        .btn-friend {
+            background-color: #1e90ff;
+            color: white;
+        }
+
+        .btn-friend:hover {
+            background-color: #0066ff;
+            transform: scale(1.05);
+        }
+
+        .btn-chat {
+            background-color: #1a1a1a;
+            color: white;
+        }
+
+        .btn-chat:hover {
+            background-color: #2a2a2a;
+        }
+
+        .profile-details {
+            padding: 16px;
+            border-top: 1px solid #1a1a1a;
+        }
+
+        .details-title {
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .detail-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            color: #ccc;
+            font-size: 14px;
+        }
+
+        .detail-icon {
+            font-size: 20px;
+            color: #666;
+        }
+
+        /* ========================
+           BOTTOM NAVIGATION
+           ======================== */
+        .bottom-nav {
+            background-color: #000;
+            border-top: 1px solid #1a1a1a;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 60px;
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            cursor: pointer;
+            color: #666;
+            transition: all 0.2s ease;
+            height: 100%;
+        }
+
+        .nav-item:hover {
+            color: #1e90ff;
+        }
+
+        .nav-item.active {
+            color: #1e90ff;
+        }
+
+        .nav-icon {
+            font-size: 24px;
+        }
+
+        .nav-label {
+            font-size: 12px;
+        }
+
+        /* ========================
+           SCROLLBAR
+           ======================== */
+        .app-content::-webkit-scrollbar,
+        .active-users::-webkit-scrollbar,
+        .chat-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .app-content::-webkit-scrollbar-track,
+        .active-users::-webkit-scrollbar-track,
+        .chat-list::-webkit-scrollbar-track {
+            background: #000;
+        }
+
+        .app-content::-webkit-scrollbar-thumb,
+        .active-users::-webkit-scrollbar-thumb,
+        .chat-list::-webkit-scrollbar-thumb {
+            background: #1a1a1a;
+            border-radius: 3px;
+        }
+
+        .app-content::-webkit-scrollbar-thumb:hover,
+        .active-users::-webkit-scrollbar-thumb:hover,
+        .chat-list::-webkit-scrollbar-thumb:hover {
+            background: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- SPLASH SCREEN -->
+        <div class="splash-screen" id="splashScreen">
+            <div class="splash-logo">S</div>
+            <div class="splash-text">SPHERE</div>
+        </div>
+
+        <!-- LOGIN SCREEN -->
+        <div class="login-screen" id="loginScreen">
+            <div class="login-container">
+                <div class="login-title">SPHERE</div>
+                <button class="login-btn google-btn" onclick="startApp()">
+                    <span>🔵</span> Continue with Google
+                </button>
+                <button class="login-btn phone-btn" onclick="startApp()">
+                    <span>📱</span> Continue with Phone
+                </button>
+            </div>
+        </div>
+
+        <!-- MAIN APP -->
+        <div class="main-app" id="mainApp">
+            <!-- FEED SCREEN -->
+            <div id="feedScreen" class="screen active">
+                <div class="app-bar">
+                    <div class="app-title">SPHERE</div>
+                    <div class="app-actions">
+                        <button class="icon-btn">🔍</button>
+                        <button class="icon-btn">🔔</button>
+                        <button class="icon-btn">💬</button>
+                    </div>
+                </div>
+
+                <div class="clips-moments">
+                    <div class="clips-moments-item clips">
+                        <span>🎬</span>
+                        <span>Clips</span>
+                    </div>
+                    <div style="width: 1px; height: 20px; background-color: #333;"></div>
+                    <div class="clips-moments-item moments">
+                        <span>✨</span>
+                        <span>Moments</span>
+                    </div>
+                </div>
+
+                <div class="post-input">
+                    <div class="avatar">👤</div>
+                    <div class="post-input-text">Sphere Feed-এ শেয়ার করুন...</div>
+                    <div class="post-input-icons">
+                        <span class="input-icon image">🖼️</span>
+                        <span class="input-icon video">🎥</span>
+                    </div>
+                </div>
+
+                <div class="app-content">
+                    <!-- Post 1 -->
+                    <div class="post-card">
+                        <div class="post-header">
+                            <div class="avatar">👤</div>
+                            <div class="post-header-info">
+                                <div class="post-username">তানভীর আহমেদ</div>
+                                <div class="post-time">২ ঘণ্টা আগে</div>
+                            </div>
+                            <div class="post-menu">⋮</div>
+                        </div>
+                        <div class="post-text">SPHERE অ্যাপে সবাইকে স্বাগতম! এখানে ইউনিক ফিচারে সবকিছু কানেক্টেড থাকবে। 🌐</div>
+                        <div class="post-actions">
+                            <div class="post-action">
+                                <span class="post-action-icon">🤍</span>
+                                <span class="post-action-text">Like</span>
+                            </div>
+                            <div class="post-action">
+                                <span class="post-action-icon">💬</span>
+                                <span class="post-action-text">Comment</span>
+                            </div>
+                            <div class="post-action">
+                                <span class="post-action-icon">📤</span>
+                                <span class="post-action-text">Share</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Post 2 -->
+                    <div class="post-card">
+                        <div class="post-header">
+                            <div class="avatar">👤</div>
+                            <div class="post-header-info">
+                                <div class="post-username">রহিম হাসান</div>
+                                <div class="post-time">৫ ঘণ্টা আগে</div>
+                            </div>
+                            <div class="post-menu">⋮</div>
+                        </div>
+                        <div class="post-text">প্রযুক্তি হলো ভবিষ্যৎ। আমরা একসাথে সেই ভবিষ্যৎ তৈরি করছি। 🚀</div>
+                        <div class="post-actions">
+                            <div class="post-action">
+                                <span class="post-action-icon">❤️</span>
+                                <span class="post-action-text">Like</span>
+                            </div>
+                            <div class="post-action">
+                                <span class="post-action-icon">💬</span>
+                                <span class="post-action-text">Comment</span>
+                            </div>
+                            <div class="post-action">
+                                <span class="post-action-icon">📤</span>
+                                <span class="post-action-text">Share</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Post 3 -->
+                    <div class="post-card">
+                        <div class="post-header">
+                            <div class="avatar">👤</div>
+                            <div class="post-header-info">
+                                <div class="post-username">ফাতেমা আক্তার</div>
+                                <div class="post-time">১০ ঘণ্টা আগে</div>
+                            </div>
+                            <div class="post-menu">⋮</div>
+                        </div>
+                        <div class="post-text">জীবন সুন্দর, যখন আমরা সবাই একসাথে থাকি। ধন্যবাদ SPHERE কে এই প্ল্যাটফর্মের জন্য। 💙</div>
+                        <div class="post-actions">
+                            <div class="post-action">
+                                <span class="post-action-icon">🤍</span>
+                                <span class="post-action-text">Like</span>
+                            </div>
+                            <div class="post-action">
+                                <span class="post-action-icon">💬</span>
+                                <span class="post-action-text">Comment</span>
+                            </div>
+                            <div class="post-action">
+                                <span class="post-action-icon">📤</span>
+                                <span class="post-action-text">Share</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CHATS SCREEN -->
+            <div id="chatsScreen" class="screen">
+                <div class="app-bar">
+                    <div class="app-title">Chats</div>
+                    <div class="app-actions">
+                        <button class="icon-btn">📷</button>
+                        <button class="icon-btn">✎</button>
+                    </div>
+                </div>
+
+                <div class="search-box">
+                    <input type="text" class="search-input" placeholder="Search chats...">
+                </div>
+
+                <div class="active-users">
+                    <div class="user-item">
+                        <div class="user-avatar">👤
+                            <div class="online-indicator"></div>
+                        </div>
+                        <div class="user-name">User 1</div>
+                    </div>
+                    <div class="user-item">
+                        <div class="user-avatar">👤
+                            <div class="online-indicator"></div>
+                        </div>
+                        <div class="user-name">User 2</div>
+                    </div>
+                    <div class="user-item">
+                        <div class="user-avatar">👤
+                            <div class="online-indicator"></div>
+                        </div>
+                        <div class="user-name">User 3</div>
+                    </div>
+                    <div class="user-item">
+                        <div class="user-avatar">👤
+                            <div class="online-indicator"></div>
+                        </div>
+                        <div class="user-name">User 4</div>
+                    </div>
+                    <div class="user-item">
+                        <div class="user-avatar">👤
+                            <div class="online-indicator"></div>
+                        </div>
+                        <div class="user-name">User 5</div>
+                    </div>
+                </div>
+
+                <div class="chat-list">
+                    <div class="chat-item">
+                        <div class="chat-avatar">👤</div>
+                        <div class="chat-info">
+                            <div class="chat-name">User 1</div>
+                            <div class="chat-preview">SPHERE অ্যাপের চ্যাটস টেস্ট চলছে...</div>
+                        </div>
+                        <div class="chat-time">10:45 AM</div>
+                    </div>
+
+                    <div class="chat-item">
+                        <div class="chat-avatar">👤</div>
+                        <div class="chat-info">
+                            <div class="chat-name">User 2</div>
+                            <div class="chat-preview">হেলো! কিভাবে আছেন?</div>
+                        </div>
+                        <div class="chat-time">09:30 AM</div>
+                    </div>
+
+                    <div class="chat-item">
+                        <div class="chat-avatar">👤</div>
+                        <div class="chat-info">
+                            <div class="chat-name">User 3</div>
+                            <div class="chat-preview">অসাধারণ একটা অ্যাপ! 😍</div>
+                        </div>
+                        <div class="chat-time">08:15 AM</div>
+                    </div>
+
+                    <div class="chat-item">
+                        <div class="chat-avatar">👤</div>
+                        <div class="chat-info">
+                            <div class="chat-name">User 4</div>
+                            <div class="chat-preview">মিটিং সময় ঠিক আছে?</div>
+                        </div>
+                        <div class="chat-time">07:50 AM</div>
+                    </div>
+
+                    <div class="chat-item">
+                        <div class="chat-avatar">👤</div>
+                        <div class="chat-info">
+                            <div class="chat-name">User 5</div>
+                            <div class="chat-preview">নতুন প্রজেক্ট শুরু করব?</div>
+                        </div>
+                        <div class="chat-time">06:20 AM</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROFILE SCREEN -->
+            <div id="profileScreen" class="screen">
+                <div class="app-bar">
+                    <div class="app-title">প্রোফাইল</div>
+                    <div class="app-actions">
+                        <button class="icon-btn">⚙️</button>
+                        <button class="icon-btn">⋯</button>
+                    </div>
+                </div>
+
+                <div class="app-content" style="padding-top: 0;">
+                    <div class="profile-header">
+                        <div class="cover-photo">📷</div>
+                        <div class="profile-avatar-container">
+                            <div class="profile-avatar">👤</div>
+                        </div>
+                    </div>
+
+                    <div class="profile-info">
+                        <div class="profile-name">তানভীর আহমেদ</div>
+                        <div class="profile-bio">Welcome to my SPHERE world! 🌐</div>
+                    </div>
+
+                    <div class="profile-actions">
+                        <button class="profile-btn btn-friend">👥 Add Friend</button>
+                        <button class="profile-btn btn-chat">💬 Chats</button>
+                    </div>
+
+                    <div class="profile-details">
+                        <div class="details-title">Details</div>
+                        <div class="detail-row">
+                            <span class="detail-icon">💼</span>
+                            <span>Works at SPHERE Inc.</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-icon">🏠</span>
+                            <span>Lives in Dhaka, Bangladesh</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-icon">🎓</span>
+                            <span>Studied at Dhaka University</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-icon">📱</span>
+                            <span>Joined on September 2024</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BOTTOM NAVIGATION -->
+            <div class="bottom-nav">
+                <div class="nav-item active" onclick="switchTab('feed', this)">
+                    <span class="nav-icon">🏠</span>
+                    <span class="nav-label">Feed</span>
+                </div>
+                <div class="nav-item" onclick="switchTab('chats', this)">
+                    <span class="nav-icon">💬</span>
+                    <span class="nav-label">Chats</span>
+                </div>
+                <div class="nav-item" onclick="switchTab('profile', this)">
+                    <span class="nav-icon">👤</span>
+                    <span class="nav-label">Profile</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Splash Screen
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('splashScreen').style.display = 'none';
+                document.getElementById('loginScreen').style.display = 'flex';
+            }, 3000);
+        });
+
+        // Login Handler
+        function startApp() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+        }
+
+        // Tab Switching
+        function switchTab(tabName, element) {
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Show selected screen
+            if (tabName === 'feed') {
+                document.getElementById('feedScreen').classList.add('active');
+            } else if (tabName === 'chats') {
+                document.getElementById('chatsScreen').classList.add('active');
+            } else if (tabName === 'profile') {
+                document.getElementById('profileScreen').classList.add('active');
+            }
+
+            // Add active class to clicked nav item
+            element.classList.add('active');
+        }
+
+        // Interactive Features
+        document.addEventListener('DOMContentLoaded', () => {
+            // Like button animation
+            document.querySelectorAll('.post-action').forEach(action => {
+                action.addEventListener('click', function() {
+                    const icon = this.querySelector('.post-action-icon');
+                    if (icon.textContent === '🤍') {
+                        icon.textContent = '❤️';
+                        this.style.color = '#ff4444';
+                    } else if (icon.textContent === '❤️') {
+                        icon.textContent = '🤍';
+                        this.style.color = '#666';
+                    }
+                });
+            });
+
+            // Search functionality
+            const searchInput = document.querySelector('.search-input');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    console.log('Searching for:', this.value);
+                });
+            }
+
+            // Add hover effects to buttons
+            document.querySelectorAll('.profile-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    alert('Feature coming soon! 🚀');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
